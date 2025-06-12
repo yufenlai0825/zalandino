@@ -63,7 +63,7 @@ exports.postLogin = async (req, res, next) => {
 
   // async await User.findOne()
     try {
-    const user = await User.findOne({ email: email }); // <--- now awaited properly
+    const user = await User.findOne({ email: email }); 
     if (!user) {
       return renderLoginWithError("Invalid email or password", true);
     }
@@ -77,10 +77,9 @@ exports.postLogin = async (req, res, next) => {
         res.redirect("/");
       });
     }
-
-    return renderLoginWithError("Invalid email or password", true);
+    return renderLoginWithError("Invalid assword. Please try again.", true);
   } catch (err) {
-    next(err); // <-- your test should now pass
+    next(err); 
   }
 
   // User.findOne({ email: email })
