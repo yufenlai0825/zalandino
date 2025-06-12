@@ -11,12 +11,14 @@ describe("Auth Controller: ", () => {
 
     // dummy user
     before(async () => {
-        await  mongoose.connect(process.env.TESTMONGODB_URI); 
+        await mongoose.connect(process.env.TESTMONGODB_URI); 
 
         const user = new User({
             email: "test@test.com",
             password: "testpassword",
-            cart: { items: []},
+            cart: { 
+                items: []
+            },
             _id: "5c0f66b979af55031b34728a"
         }); 
         await user.save(); 
@@ -29,9 +31,7 @@ describe("Auth Controller: ", () => {
             isEmpty: () => true,
             array: () => []
         }; 
-        // sinon.stub(expressValidator, "validationResult").returns(mockValidationResult);
-        const validationStub = sinon.stub(expressValidator, "validationResult");
-        validationStub.returns(mockValidationResult);
+        sinon.stub(expressValidator, "validationResult").returns(mockValidationResult);
         
         sinon.stub(User, "findOne").rejects(); 
         const req = {
@@ -48,8 +48,8 @@ describe("Auth Controller: ", () => {
         expect(next.firstCall.args[0]).to.be.an("error"); 
 
         User.findOne.restore(); 
-        // expressValidator.validationResult.restore(); 
-        validationStub.restore();
+        expressValidator.validationResult.restore(); 
+
     }); 
 
     it("should destroy session and redirect to main page if user is logged out", () => {
