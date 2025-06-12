@@ -68,6 +68,7 @@ const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: "sessions"
 }); 
+
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -88,7 +89,7 @@ app.use((req, res, next) => {
                 if (!user) {
                     return next(); 
                 }
-                req.user = user; // gives req.user access to all funs inside model (e.g. clearCart() )
+                req.user = user; 
                 next();
               })
               .catch(err => next(err));

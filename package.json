@@ -4,7 +4,7 @@
   "description": "Zalandino E-Commerce Website",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "nodemon app.js",
     "start-server": "node app.js"
   },
@@ -13,7 +13,8 @@
   "devDependencies": {
     "chai": "^5.2.0",
     "mocha": "^11.6.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "sinon": "^20.0.0"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
