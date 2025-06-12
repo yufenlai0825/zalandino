@@ -1,0 +1,22 @@
+<%- include('../partials/head.ejs') %>
+    </head>
+
+    <body>
+        <%- include('../partials/navigation.ejs') %>
+<section class="branding-banner">
+    <div class="branding-content">
+        <img src="/images/dino-icon.jpg" alt="Dino Logo" class="branding-icon">
+        <h1 class="branding-title">Zalandino</h1>
+    </div>
+</section>
+        <main class="centered">
+            <h1><%= product.title %></h1>
+            <hr>
+            <div class="image"><img src="/<%= product.imageUrl %>" alt="<%= product.title %>"></div>
+            <h2><%= product.price %></h2>
+            <p><%= product.description %></p>
+            <% if ( isAuthenticated ){ %>
+            <%- include("../partials/add-to-cart.ejs") %>
+            <% } %>
+        </main>
+        <%- include('../partials/end.ejs') %>

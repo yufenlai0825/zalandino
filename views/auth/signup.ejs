@@ -1,0 +1,43 @@
+<%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/css/forms.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+   <%- include('../partials/navigation.ejs') %>
+<section class="branding-banner">
+    <div class="branding-content">
+        <img src="/images/dino-icon.jpg" alt="Dino Logo" class="branding-icon">
+        <h1 class="branding-title">Zalandino</h1>
+    </div>
+</section>
+    <main>
+        <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div> 
+        <% } %>
+        <form class="login-form" action="/signup" method="POST" novalidate>
+            <div class="form-control">
+                <label for="email">E-Mail</label>
+                <input 
+                class="<%= validationErrors.find(e => { return e.path === "email"}) ? "invalid" : "" %>" 
+                type="email" 
+                name="email" 
+                id="email" 
+                value="<%= oldInput.email %>"> 
+            </div>
+            <div class="form-control">
+                <label for="password">Password</label>
+                <input 
+                class="<%= validationErrors.find(e => { return e.path === "password"}) ? "invalid" : "" %>"
+                type="password" name="password" id="password" placeholder="min. 8 characters" value="<%= oldInput.password %>">
+            </div>
+            <div class="form-control">
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                class="<%= validationErrors.find(e => { return e.path === "confirmPassword"}) ? "invalid" : "" %>"
+                type="password" name="confirmPassword" id="confirmPassword" value="<%= oldInput.confirmPassword %>">
+            </div>
+            <button class="btn" type="submit">Sign Up</button> 
+        </form>
+    </main>
+<%- include('../partials/end.ejs') %>

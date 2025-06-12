@@ -1,0 +1,45 @@
+<%- include('../partials/head.ejs') %>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../partials/navigation.ejs') %>
+<section class="branding-banner">
+    <div class="branding-content">
+        <img src="/images/dino-icon.jpg" alt="Dino Logo" class="branding-icon">
+        <h1 class="branding-title">Zalandino</h1>
+    </div>
+</section>
+        <main>
+            <% if (products.length > 0) { %>
+                <ul class="cart__item-list">
+                    <% products.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1><%= p.productID.title %></h1>
+                            <h2>Quantity: <%= p.qty %></h2>
+                            <form action="/cart" method="POST">
+                                <button class="btn" type="submit">Add One</button>
+                                <input type="hidden" name="productID" value="<%= p.productID._id %>">
+                            </form>
+                            <form action="/cart-delete-one" method="POST">
+                                <button class="btn" type="submit">Remove One</button>
+                                <input type="hidden" name="productID" value="<%= p.productID._id %>">
+                            </form>
+                            <form action="/cart-delete-item" method="POST">
+                                <input type="hidden" value="<%= p.productID._id %>" name="productID"> 
+                                <button class="btn danger" type="submit">Remove All</button>
+                            </form>
+                        </li>
+                    <% }) %>
+                </ul>
+                <div class="centered">
+                <%# <form action="/create-orders" method="POST">
+                    <button type="submit" class="btn">Order Now!</button>
+                </form> %>
+                <a class="btn" href="/checkout">Order Now!</a>
+                </div>
+            <% } else { %>
+                <h1>No Products in Cart!</h1>
+            <% } %>
+        </main>
+        <%- include('../partials/end.ejs') %>

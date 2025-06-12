@@ -1,0 +1,38 @@
+<%- include('../partials/head.ejs') %>
+  <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../partials/navigation.ejs') %>
+<section class="branding-banner">
+    <div class="branding-content">
+        <img src="/images/dino-icon.jpg" alt="Dino Logo" class="branding-icon">
+        <h1 class="branding-title">Zalandino</h1>
+    </div>
+</section>
+        <main>
+            <ul class="cart__item-list">
+                    <% products.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1><%= p.productID.title %></h1>
+                            <h2>Quantity: <%= p.qty %></h2>
+                        </li>
+                    <% }) %>
+            </ul>
+            <div class="centered"><h2>Total: <%= totalSum %></h2></div>
+            <div class="centered">
+                <button id="order-btn" class="btn">ORDER</button>
+                <script src="https://js.stripe.com/v3/"></script>
+                <script>
+                    // frontend 
+                    var stripe = Stripe("<%= stripePublicKey %>");
+                    var orderBtn = document.getElementById("order-btn"); 
+                    orderBtn.addEventListener("click", function(){
+                        stripe.redirectToCheckout({
+                            sessionId: "<%= sessionId %>"  // stripe only accepts sessionId as a valid param
+                        }); 
+                    }); 
+                </script>
+            </div>
+        </main>
+        <%- include('../partials/end.ejs') %>
