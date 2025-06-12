@@ -29,14 +29,14 @@ exports.getLogin = (req, res, next) => {
     }); 
 }; 
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = async (req, res, next) => {
   const email = req.body.email; 
   const password = req.body.password;  
   const errors = validationResult(req);
 
   // helper function to render login with errors
   const renderLoginWithError = (errorMsg, passwordError = false) => {
-    const validationErrors = [...errors.array()];
+  const validationErrors = [...errors.array()];
     
     // add password error if needed
     if (passwordError) {
@@ -61,28 +61,50 @@ exports.postLogin = (req, res, next) => {
     return renderLoginWithError(errors.array()[0].msg);
   }
 
-  User.findOne({ email: email })
-    .then(user => {
-      if (!user) {
-      throw new Error("User not found");
-    }; 
-    
-      return bcrypt.compare(password, user.password)
-        .then(doMatch => {
-          if (doMatch) { 
-            req.session.isLoggedIn = true;
-            req.session.user = user; 
-            return req.session.save(err => {  
-              console.log(err);
-              return res.redirect("/");
-            }); 
-          }
+  // async await User.findOne()
+    try {
+    const user = await User.findOne({ email: email }); // <--- now awaited properly
+    if (!user) {
+      return renderLoginWithError("Invalid email or password", true);
+    }
+
+    const doMatch = await bcrypt.compare(password, user.password);
+    if (doMatch) {
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+      return req.session.save(err => {
+        if (err) return next(err);
+        res.redirect("/");
+      });
+    }
+
+    return renderLoginWithError("Invalid email or password", true);
+  } catch (err) {
+    next(err); // <-- your test should now pass
+  }
+
+  // User.findOne({ email: email })
+  //   .then(user => {
+  //     if (!user) {
+  //     throw new Error("User not found");
+  //   }; 
+
+  //     return bcrypt.compare(password, user.password)
+  //       .then(doMatch => {
+  //         if (doMatch) { 
+  //           req.session.isLoggedIn = true;
+  //           req.session.user = user; 
+  //           return req.session.save(err => {  
+  //             console.log(err);
+  //             return res.redirect("/");
+  //           }); 
+  //         }
           
-          // password doesn't match - render with password error
-          return renderLoginWithError("Invalid password. Please try again!", true);
-        });
-    })
-  .catch(err => next(err));
+  //         // password doesn't match - render with password error
+  //         return renderLoginWithError("Invalid password. Please try again!", true);
+  //       });
+  //   })
+  // .catch(err => next(err));
 };
 
 

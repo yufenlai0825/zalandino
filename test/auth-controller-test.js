@@ -43,8 +43,6 @@ describe("Auth Controller: ", () => {
 
         const next = sinon.spy(); 
         await authController.postLogin(req, {}, next); 
-        console.log("Next called?", next.called); 
-        console.log("Arguments passed to next:", next.firstCall?.args);
 
         expect(next.calledOnce).to.be.true; 
         expect(next.firstCall.args[0]).to.be.an("error"); 
