@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const crypto = require("crypto"); 
-const { validationResult } = require("express-validator"); 
+const { validationResult } = require("../middleware/validation"); 
 const env = require("dotenv");
 env.config(); 
 
@@ -63,6 +63,10 @@ exports.postLogin = (req, res, next) => {
 
   User.findOne({ email: email })
     .then(user => {
+      if (!user) {
+      throw new Error("User not found");
+    }; 
+    
       return bcrypt.compare(password, user.password)
         .then(doMatch => {
           if (doMatch) { 
