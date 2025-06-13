@@ -72,7 +72,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(compression());
   app.use(morgan("combined", { stream: accessLogStream }));
 } else {
-  // app.use(morgan("dev"));  // read in terminal during dev
+  app.use(morgan("dev")); // read in terminal during dev
 }
 
 // files middleware
