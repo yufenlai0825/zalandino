@@ -1,5 +1,8 @@
 <%- include('../partials/head.ejs') %>
   <link rel="stylesheet" href="/css/cart.css">
+  <%# add meta tags; HTML not scripts so safe for CSP perspectives %>
+  <meta name="stripe-public-key" content="<%= stripePublicKey %>">
+  <meta name="stripe-session-id" content="<%= sessionId %>">
     </head>
 
     <body>
@@ -23,10 +26,6 @@
             <div class="centered">
                 <button id="order-btn" class="btn">ORDER</button>
                 <script src="https://js.stripe.com/v3/"></script>
-                <script>
-                    window.stripePublicKey = "<%= stripePublicKey %>"; 
-                    window.sessionId = "<%= sessionId %>";
-                </script>
                 <script src="/js/stripe.js"></script>
             </div>
         </main>
