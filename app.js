@@ -1,137 +1,149 @@
-const path = require('path');
-const express = require('express');
+const path = require("path");
+const express = require("express");
 const session = require("express-session");
 const mongoose = require("mongoose");
-const MongoDBStore = require("connect-mongodb-session")(session); 
+const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
-const multer = require("multer"); 
+const multer = require("multer");
 const helmet = require("helmet");
-const compression = require("compression"); 
-const morgan = require("morgan");  
-const fs = require("fs");  
+const compression = require("compression");
+const morgan = require("morgan");
+const fs = require("fs");
 const env = require("dotenv");
-env.config(); 
+env.config();
 
 const errorController = require("./controllers/error");
-const shopController = require('./controllers/shop');
+const shopController = require("./controllers/shop");
 const User = require("./models/user");
-const adminRoutes = require('./routes/admin'); 
-const shopRoutes = require('./routes/shop');
-const authRoutes = require('./routes/auth');
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 
-const MONGODB_URI = process.env.MONGODB_URI
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const app = express();
 
 const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "images") 
-    },
-    filename: (req, file, cb) => {
-        cb(null, new Date().toISOString() + "-" + file.originalname) 
-    }
-}); 
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "-" + file.originalname);
+  }
+});
 
 const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
-    if (file.mimetype === "image/png" || file.mimetype === "image/jpg" || file.mimetype === "image/jpeg") {
-        cb(null, true);  
-    } else {
-        cb(null, false); 
-    }
-}; 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), {flags: "a"}); 
+app.set("view engine", "ejs");
+app.set("views", "views");
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
-
-if (process.env.NODE_ENV === 'production') {
-    app.use(helmet()); 
-    app.use(compression()); 
-    app.use(morgan("combined", { stream: accessLogStream }));  
+if (process.env.NODE_ENV === "production") {
+  app.use(helmet());
+  app.use(compression());
+  app.use(morgan("combined", { stream: accessLogStream }));
 } else {
-    // app.use(morgan("dev"));  // read in terminal during dev
+  // app.use(morgan("dev"));  // read in terminal during dev
 }
 
 // files middleware
-app.use(express.static(path.join(__dirname, 'public'))); 
-app.use("/images", express.static(path.join(__dirname, 'images'))); 
-app.use(multer({storage: fileStorage, fileFilter: fileFilter }).single("image")); 
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 
-app.post('/webhook', express.raw({ type: 'application/json' }), shopController.postStripeWebhook);
+app.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  shopController.postStripeWebhook
+);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const store = new MongoDBStore({
-    uri: MONGODB_URI,
-    collection: "sessions"
-}); 
+  uri: MONGODB_URI,
+  collection: "sessions"
+});
 
 app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false, 
-        saveUninitialized: false, 
-        store: store
-    })
-); 
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
 
 app.use(flash());
 
 app.use((req, res, next) => {
-    if(!req.session.user){
-        return next(); 
-    }; 
-    User.findById(req.session.user._id)
-              .then(user => {
-                if (!user) {
-                    return next(); 
-                }
-                req.user = user; 
-                next();
-              })
-              .catch(err => next(err));
-
-}); 
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then((user) => {
+      if (!user) {
+        return next();
+      }
+      req.user = user;
+      next();
+    })
+    .catch((err) => next(err));
+});
 
 app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;  
+  res.locals.isAuthenticated = req.session.isLoggedIn;
   next();
 });
 
-app.use('/admin', adminRoutes);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
 // error handling
-app.get('/500', errorController.get500);
+app.get("/500", errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
-    res.status(500).render('500', { 
-        pageTitle: 'Error', 
-        path: '/500',  
-        isAuthenticated: req.session ? req.session.isLoggedIn : false 
-    }) 
-}); 
+  res.status(500).render("500", {
+    pageTitle: "Error",
+    path: "/500",
+    isAuthenticated: req.session ? req.session.isLoggedIn : false
+  });
+});
 
-mongoose.connect(MONGODB_URI)
-.then(result => {
-    const server = app.listen(process.env.PORT || 3000); 
-    const io = require("./socket").init(server); 
-    io.on("connection", socket => {
-        // console.log("Client connected!"); 
-        socket.on("join", role => {
-            if (role === "admin") {
-                socket.join("admin"); 
-            } else {
-                socket.join("user")
-            }
-        });     
-    }); 
-})
-.catch(err => {
-    console.log('Database connection failed:', err);
-}); 
+mongoose
+  .connect(MONGODB_URI)
+  .then((result) => {
+    const server = app.listen(process.env.PORT || 3000);
+    const io = require("./socket").init(server);
+    io.on("connection", (socket) => {
+      // console.log("Client connected!");
+      socket.on("join", (role) => {
+        if (role === "admin") {
+          socket.join("admin");
+        } else {
+          socket.join("user");
+        }
+      });
+    });
+  })
+  .catch((err) => {
+    console.log("Database connection failed:", err);
+  });

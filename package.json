@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha",
     "start": "nodemon app.js",
-    "start-server": "node app.js"
+    "start-server": "node app.js",
+    "format": "prettier --write ."
   },
   "author": "Yu-Fen Lai",
   "license": "MIT",
@@ -14,6 +15,7 @@
     "chai": "^5.2.0",
     "mocha": "^11.6.0",
     "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
     "sinon": "^20.0.0"
   },
   "dependencies": {

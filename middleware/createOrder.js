@@ -2,7 +2,7 @@ const Order = require("../models/order");
 
 module.exports = async (user) => {
   const populatedUser = await user.populate("cart.items.productID");
-  const products = populatedUser.cart.items.map(i => ({
+  const products = populatedUser.cart.items.map((i) => ({
     productData: i.productID.toObject(),
     qty: i.qty
   }));
@@ -14,5 +14,3 @@ module.exports = async (user) => {
   await user.clearCart();
   return order;
 };
-
-
