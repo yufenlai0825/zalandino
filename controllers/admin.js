@@ -120,7 +120,7 @@ exports.postEditProduct = (req, res, next) => {
     return product
     .save()
     .then(result => {
-      io.getIO().emit("products", {action: "update", product: result}); 
+      io.getIO().emit("products", { action: "update", product: result}); 
       res.redirect("/admin/products");
   })
   })
@@ -142,12 +142,15 @@ exports.getProducts = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
   const prodID = req.params.productID; // update to params too 
+  let deletedProduct; // for socket.io
   
   Product.findById(prodID)
   .then(product => {
     if (!product) {
       return next(new Error("Product not found."))
     }
+
+    deletedProduct = product; 
 
     fileHelper.deleteFile(product.imageUrl); // remove old image
     return Product.findByIdAndDelete({ _id: prodID, userID: req.user._id })
@@ -156,7 +159,8 @@ exports.deleteProduct = (req, res, next) => {
       // when a product is removed, also empty the product inside all user carts
     })
     .then(() => {
-    res.status(200).json({message: "Successfully delete product!"}); // send the json res
+    io.getIO().emit("products", {action: "delete", product: deletedProduct}); 
+    res.status(200).json({message: "Successfully delete product!"}); 
     })
   .catch(err => {res.status(500).json({message: "Delete product failed."})}); 
   })

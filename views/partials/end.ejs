@@ -18,7 +18,10 @@
                 location.reload();   
             }
         } else if (data.action === "delete") {
-
+            console.log("Product is deleted:", data.product);
+            if (!isAdmin) {
+                location.reload();   
+            }
         }
 
     }); 
