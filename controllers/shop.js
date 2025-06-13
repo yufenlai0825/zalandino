@@ -165,9 +165,9 @@ exports.getCheckout = (req, res, next) => {
         }),
         mode: "payment", // one-time payment
         success_url:
-          req.protocol + "://" + req.get("host") + "/checkout/success", 
+          req.protocol + "://" + req.get("host") + "/checkout/success",
         cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
-        client_reference_id: req.user._id.toString() 
+        client_reference_id: req.user._id.toString()
       });
     })
     .then((session) => {
