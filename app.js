@@ -119,7 +119,11 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(MONGODB_URI)
 .then(result => {
-    app.listen(process.env.PORT || 3000); 
+    const server = app.listen(process.env.PORT || 3000); 
+    const io = require("./socket").init(server); 
+    io.on("connection", socket => {
+        console.log("Client connected!"); 
+    }); 
 })
 .catch(err => {
     console.log('Database connection failed:', err);
