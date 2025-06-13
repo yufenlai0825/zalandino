@@ -129,11 +129,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  ssl: true
-})
+  .connect(MONGODB_URI, {ssl: true})
   .then((result) => {
     const server = app.listen(process.env.PORT || 3000);
     const io = require("./socket").init(server);
