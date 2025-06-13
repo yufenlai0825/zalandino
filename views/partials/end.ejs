@@ -1,4 +1,19 @@
 <script src="/js/main.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on("products", (data) => {
+        if (data.action === "add") {
+            console.log("New product added:", data.product);
+            location.reload(); 
+        } else if (data.action === "update") {
+            
+        } else if (data.action === "delete") {
+
+        }
+
+    }); 
+</script>
 </body>
 
 </html>

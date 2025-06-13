@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const User = require("../models/user"); 
 const { validationResult } = require("../middleware/validation");
 const fileHelper = require("../middleware/file"); 
+const io = require("../socket"); 
 
 
 exports.getAddProduct = (req, res, next) => {
@@ -57,6 +58,7 @@ exports.postAddProduct = (req, res, next) => {
   product
   .save() 
   .then(result => {
+    io.getIO().emit("products", {action: "add", product: result}); 
     res.redirect("/admin/products"); 
   })
   .catch(err => next(err)); 
