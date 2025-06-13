@@ -120,7 +120,8 @@ exports.postEditProduct = (req, res, next) => {
     return product
     .save()
     .then(result => {
-    res.redirect("/admin/products")
+      io.getIO().emit("products", {action: "update", product: result}); 
+      res.redirect("/admin/products");
   })
   })
   .catch(err => next(err)); 

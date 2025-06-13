@@ -122,7 +122,14 @@ mongoose.connect(MONGODB_URI)
     const server = app.listen(process.env.PORT || 3000); 
     const io = require("./socket").init(server); 
     io.on("connection", socket => {
-        console.log("Client connected!"); 
+        // console.log("Client connected!"); 
+        socket.on("join", role => {
+            if (role === "admin") {
+                socket.join("admin"); 
+            } else {
+                socket.join("user")
+            }
+        });     
     }); 
 })
 .catch(err => {
