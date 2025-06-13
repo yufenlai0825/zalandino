@@ -24,15 +24,10 @@
                 <button id="order-btn" class="btn">ORDER</button>
                 <script src="https://js.stripe.com/v3/"></script>
                 <script>
-                    // frontend 
-                    var stripe = Stripe("<%= stripePublicKey %>");
-                    var orderBtn = document.getElementById("order-btn"); 
-                    orderBtn.addEventListener("click", function(){
-                        stripe.redirectToCheckout({
-                            sessionId: "<%= sessionId %>"  // stripe only accepts sessionId as a valid param
-                        }); 
-                    }); 
+                    window.stripePublicKey = "<%= stripePublicKey %>"; 
+                    window.sessionId = "<%= sessionId %>";
                 </script>
+                <script src="/js/stripe.js"></script>
             </div>
         </main>
         <%- include('../partials/end.ejs') %>

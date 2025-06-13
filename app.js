@@ -61,8 +61,7 @@ if (process.env.NODE_ENV === "production") {
           scriptSrc: [
             "'self'",
             "https://js.stripe.com",
-            "'sha256-itK/YloyVzbSWE44iTJ/xJ30j49fS+9KjKZ4dIww/XY='",
-            "'sha256-urO9WPqv8su4UPnc6z1fxpmOx/PuyTjQue7wD/fVLWs='"
+            "https://cdn.socket.io"
           ],
           frameSrc: ["'self'", "https://js.stripe.com"],
           objectSrc: ["'none'"]
