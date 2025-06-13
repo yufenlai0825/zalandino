@@ -53,7 +53,23 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 if (process.env.NODE_ENV === "production") {
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "https://js.stripe.com",
+            "'sha256-itK/YloyVzbSWE44iTJ/xJ30j49fS+9KjKZ4dIww/XY='",
+            "'sha256-urO9WPqv8su4UPnc6z1fxpmOx/PuyTjQue7wD/fVLWs='"
+          ],
+          frameSrc: ["'self'", "https://js.stripe.com"],
+          objectSrc: ["'none'"]
+        }
+      }
+    })
+  );
   app.use(compression());
   app.use(morgan("combined", { stream: accessLogStream }));
 } else {
@@ -129,7 +145,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(MONGODB_URI, {ssl: true})
+  .connect(MONGODB_URI, { ssl: true })
   .then((result) => {
     const server = app.listen(process.env.PORT || 3000);
     const io = require("./socket").init(server);
