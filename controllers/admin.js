@@ -137,7 +137,6 @@ exports.getProducts = (req, res, next) => {
   .catch(err => next(err));
 }; 
 
-// rename function after we update the routes
 exports.deleteProduct = (req, res, next) => {
   const prodID = req.params.productID; // update to params too 
   
