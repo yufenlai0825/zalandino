@@ -62,7 +62,8 @@ https://zalandino.onrender.com
 | **Real-time**    | Socket.IO                            |
 | **PDF Generation** | PDFKit                             |
 | **Testing**      | Mocha, Chai, Sinon                   |
-| **Dev Tools**    | Nodemon, Prettier                    |
+| **Version Control** | Git & GitHub                             |
+| **Deployment**      | Render                                   |
 
 ---
 
