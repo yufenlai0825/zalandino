@@ -37,9 +37,9 @@ https://zalandino.onrender.com
   - Order history and cart clearance upon checkout
 
 - **Email Notifications**
-  - Sigmup + password reset email confirmations 
+  - Signup + password reset email confirmations 
   - Using time-limited secure tokens for password reset
-  - (Currently in testing via single sender verification – no custom domain yet)
+  - (Currently in testing via single sender verification; no custom domain yet)
 
 - **Testing**
   - Unit tests for authentication using Mocha, Chai, and Sinon
