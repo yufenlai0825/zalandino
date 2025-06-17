@@ -172,7 +172,7 @@ exports.deleteProduct = (req, res, next) => {
             action: "delete",
             product: deletedProduct
           });
-          res.status(200).json({ message: "Successfully delete product!" });
+          return res.status(200).json({ message: "Successfully delete product!" });
         })
         .catch((err) => {
           res.status(500).json({ message: "Delete product failed." });
