@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
       method: "DELETE"
     })
     .then((result) => {
-      return result.json();
+     result.json();
     })
     .then((data) => {
       console.log(data.message); // Successfully delete product
