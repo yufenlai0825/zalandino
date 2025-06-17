@@ -9,9 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("/admin/product/" + prodID, {
       method: "DELETE"
     })
-    .then((result) => {
-     result.json();
-    })
+    .then(result => result.json())
     .then((data) => {
       console.log(data.message); // Successfully delete product
       productElement.parentNode.removeChild(productElement);

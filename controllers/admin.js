@@ -153,7 +153,7 @@ exports.deleteProduct = (req, res, next) => {
   Product.findById(prodID)
     .then((product) => {
       if (!product) {
-        return next(new Error("Product not found."));
+        return res.status(404).json({ message: "Product not found." });
       }
 
       deletedProduct = product;
