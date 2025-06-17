@@ -45,7 +45,25 @@ https://zalandino.onrender.com
   - Unit tests for authentication using Mocha, Chai, and Sinon
   - Testable middleware for route protection
 
+---
+## 🎥 Live Demos
+ **Input Validation & Authentication**
+  - Validator + Flash messages for instant input feedback
+  - Dynamic header for logged-in users vs. visitors
 
+![Application Demo](./assets/login+auth.gif)
+
+**Checkout & PDF Invoice Download**
+  - Payment done using Stripe
+  - Auto-generated PDF invoices after purchase
+
+![Application Demo](./assets/stripe+order.gif)
+
+**Real-Time Updates**
+  - Left: Admin Dashboard, Right: Client View
+  - Real-time updates of the shop powered by socket.io
+
+![Application Demo](./assets/socket.io.gif)
 ---
 
 ## 🛠️ Tech Stack
