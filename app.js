@@ -32,17 +32,7 @@ const s3 = new AWS.S3({
   region: process.env.AWS_REGION
 });
 
-// const fileStorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "images");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, new Date().toISOString() + "-" + file.originalname);
-//   }
-// });
-
 const fileFilter = (req, file, cb) => {
-  console.log("🔍 Checking file:", file.originalname, file.mimetype);
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
@@ -60,10 +50,6 @@ const fileStorage = multer({
     bucket: "zalandino-images",
     acl: "public-read",
     key: (req, file, cb) => {
-      console.log(
-        "⚙️ multer-s3 is generating key for file:",
-        file.originalname
-      );
       cb(null, new Date().toISOString() + "-" + file.originalname);
     }
   }),
