@@ -18,6 +18,7 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, price, description } = req.body;
   const image = req.file;
+  console.log("req.file:", req.file);
 
   if (!image) {
     return res.status(422).render("admin/edit-product", {
