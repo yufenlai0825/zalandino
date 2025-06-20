@@ -6,7 +6,9 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
-const AWS = require("aws-sdk");
+// use AWS v3 so it's compatiable with multer-s3
+const { S3Client } = require("@aws-sdk/client-s3");
+const { fromEnv } = require("@aws-sdk/credential-provider-env");
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
@@ -26,14 +28,12 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const app = express();
 
 // use S3 as image storage
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: fromEnv() // pull from .env
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log("🔍 Checking file:", file.originalname, file.mimetype); //test
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
@@ -51,10 +51,6 @@ const fileStorage = multer({
     bucket: "zalandino-images",
     acl: "public-read",
     key: (req, file, cb) => {
-      console.log(
-        "⚙️ multer-s3 is generating key for file:",
-        file.originalname
-      ); //test
       cb(null, new Date().toISOString() + "-" + file.originalname);
     }
   }),
