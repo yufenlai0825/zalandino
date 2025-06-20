@@ -33,6 +33,7 @@ const s3 = new AWS.S3({
 });
 
 const fileFilter = (req, file, cb) => {
+  console.log("🔍 Checking file:", file.originalname, file.mimetype); //test
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpg" ||
@@ -50,6 +51,7 @@ const fileStorage = multer({
     bucket: "zalandino-images",
     acl: "public-read",
     key: (req, file, cb) => {
+      onsole.log("⚙️ multer-s3 is generating key for file:", file.originalname); //test
       cb(null, new Date().toISOString() + "-" + file.originalname);
     }
   }),
@@ -140,6 +142,12 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+// check middleware err
+app.use((err, req, res, next) => {
+  console.error("🧨 Unhandled error:", err);
+  next(err);
+});
 
 // error handling
 app.get("/500", errorController.get500);
