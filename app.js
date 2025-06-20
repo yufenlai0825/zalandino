@@ -99,9 +99,7 @@ if (process.env.NODE_ENV === "production") {
 // files middleware
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
-app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
+app.use(fileStorage.single("image"));
 
 app.post(
   "/webhook",
