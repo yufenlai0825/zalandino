@@ -10,7 +10,7 @@
 ![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
 ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
+![Render](https://img.shields.io/badge/Render-000000.svg?style=for-the-badge&logo=render&logoColor=white)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 ---
