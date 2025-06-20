@@ -18,7 +18,6 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, price, description } = req.body;
   const image = req.file;
-  //console.log(image);
 
   if (!image) {
     return res.status(422).render("admin/edit-product", {
@@ -44,7 +43,7 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: errors.array()
     });
   }
-  const imageUrl = image.path; // so we can use imageUrl again
+  const imageUrl = image.location; // S3 URL from multer-s3
 
   const product = new Product({
     title: title,
@@ -146,37 +145,27 @@ exports.getProducts = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.deleteProduct = (req, res, next) => {
-  const prodID = req.params.productID; // update to params too
-  let deletedProduct; // for socket.io
+exports.deleteProduct = async (req, res, next) => {
+  const prodID = req.params.productID;
 
-  Product.findById(prodID)
-    .then((product) => {
-      if (!product) {
-        return res.status(404).json({ message: "Product not found." });
-      }
-
-      deletedProduct = product;
-
-      fileHelper.deleteFile(product.imageUrl); // remove old image
-      return Product.findByIdAndDelete({ _id: prodID, userID: req.user._id })
-        .then(() => {
-          return User.updateMany(
-            {},
-            { $pull: { "cart.items": { productID: prodID } } }
-          );
-          // when a product is removed, also empty the product inside all user carts
-        })
-        .then(() => {
-          io.getIO().emit("products", {
-            action: "delete",
-            product: deletedProduct
-          });
-          res.status(200).json({ message: "Successfully delete product!" });
-        })
-        .catch((err) => {
-          res.status(500).json({ message: "Delete product failed." });
-        });
-    })
-    .catch((err) => next(err));
+  try {
+    const product = await Product.findById(prodID);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+    const deletedProduct = product;
+    await fileHelper.deleteFile(product.imageUrl);
+    await Product.findByIdAndDelete({ _id: prodID, userID: req.user._id });
+    await User.updateMany(
+      {},
+      { $pull: { "cart.items": { productID: prodID } } }
+    );
+    io.getIO().emit("products", {
+      action: "delete",
+      product: deletedProduct
+    });
+    res.status(200).json({ message: "Successfully delete product!" });
+  } catch (err) {
+    res.status(500).json({ message: "Delete product failed." });
+  }
 };
