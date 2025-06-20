@@ -11,7 +11,9 @@ const s3 = new S3Client({
 
 // https://zalandino-images.s3.eu-north-1.amazonaws.com/2025-06-16T10:13:25.044Z-07.png
 const extractKeyFromUrl = (url) => {
-  return url.split("/").pop(); // returns the last element aka filename
+  return decodeURIComponent(url.split("/").pop());
+  // returns the last element aka filename
+  // decode for special characters
 };
 
 // delete file from S3
