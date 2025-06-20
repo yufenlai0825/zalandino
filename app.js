@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const flash = require("connect-flash");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
@@ -23,14 +25,21 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 const app = express();
 
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "-" + file.originalname);
-  }
+// use S3 as image storage
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
 });
+
+// const fileStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "images");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, new Date().toISOString() + "-" + file.originalname);
+//   }
+// });
 
 const fileFilter = (req, file, cb) => {
   if (
@@ -43,6 +52,18 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
+const fileStorage = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: "zalandino-images",
+    acl: "public-read",
+    key: (req, file, cb) => {
+      cb(null, new Date().toISOString() + "-" + file.originalname);
+    }
+  }),
+  fileFilter: fileFilter
+});
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
