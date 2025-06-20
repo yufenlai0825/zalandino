@@ -51,7 +51,10 @@ const fileStorage = multer({
     bucket: "zalandino-images",
     acl: "public-read",
     key: (req, file, cb) => {
-      onsole.log("⚙️ multer-s3 is generating key for file:", file.originalname); //test
+      console.log(
+        "⚙️ multer-s3 is generating key for file:",
+        file.originalname
+      ); //test
       cb(null, new Date().toISOString() + "-" + file.originalname);
     }
   }),
