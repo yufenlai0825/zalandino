@@ -87,7 +87,6 @@ exports.getEditProduct = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// use fileHelper
 exports.postEditProduct = (req, res, next) => {
   const errors = validationResult(req);
   const { title, price, description, productID } = req.body;
@@ -121,7 +120,7 @@ exports.postEditProduct = (req, res, next) => {
       product.description = description;
       if (image) {
         fileHelper.deleteFile(product.imageUrl);
-        product.imageUrl = image.path; // delete the old image
+        product.imageUrl = image.location; // delete the old image
       }
 
       return product.save().then((result) => {
