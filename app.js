@@ -77,6 +77,10 @@ if (process.env.NODE_ENV === "production") {
             "https://cdn.socket.io"
           ],
           frameSrc: ["'self'", "https://js.stripe.com"],
+          imgSrc: [
+            "'self'",
+            "https://zalandino-images.s3.eu-north-1.amazonaws.com"
+          ],
           objectSrc: ["'none'"]
         }
       }
