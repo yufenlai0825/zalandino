@@ -143,7 +143,7 @@ app.use(authRoutes);
 
 // check middleware err
 app.use((err, req, res, next) => {
-  console.error("🧨 Unhandled error:", err);
+  console.error("Unhandled error:", err);
   next(err);
 });
 
