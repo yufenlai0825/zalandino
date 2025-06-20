@@ -49,7 +49,6 @@ const fileStorage = multer({
   storage: multerS3({
     s3: s3,
     bucket: "zalandino-images",
-    acl: "public-read",
     key: (req, file, cb) => {
       cb(null, new Date().toISOString() + "-" + file.originalname);
     }
